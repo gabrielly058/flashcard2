@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz de Perguntas</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz de Conhecimentos Gerais</h1>
+    <div class="question-box">
+      <p class="question" id="question-text"></p>
+      <ul class="options" id="options-list"></ul>
+      <p class="result" id="result"></p>
+      <button id="next-btn" onclick="nextQuestion()" disabled>Próxima</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Qual é o maior planeta do sistema solar?",
+        options: ["Terra", "Vênus", "Júpiter", "Marte"],
+        correct: 2
+      },
+      {
+        question: "Quem pintou a Mona Lisa?",
+        options: ["Michelangelo", "Leonardo da Vinci", "Van Gogh", "Picasso"],
+        correct: 1
+      },
+      {
+        question: "Qual é o elemento químico representado por 'O'?",
+        options: ["Ouro", "Osmio", "Oxigênio", "Óxido"],
+        correct: 2
+      },
+      {
+        question: "Em que continente fica o Egito?",
+        options: ["Ásia", "Europa", "África", "América"],
+        correct: 2
+      },
+      {
+        question: "Quantos lados tem um hexágono?",
+        options: ["5", "6", "7", "8"],
+        correct: 1
+      },
+      {
+        question: "Qual é o animal símbolo da Austrália?",
+        options: ["Coala", "Canguru", "Emu", "Diabo-da-Tasmânia"],
+        correct: 1
+      }
+    ];
+
+    let current = 0;
+
+    function loadQuestion() {
+      const q = questions[current];
+      document.getElementById("question-text").textContent = q.question;
+      const optionsList = document.getElementById("options-list");
+      optionsList.innerHTML = "";
+
+      q.options.forEach((opt, idx) => {
+        const li = document.createElement("li");
+        li.textContent = opt;
+        li.onclick = () => checkAnswer(li, idx === q.correct);
+        optionsList.appendChild(li);
+      });
+
+      document.getElementById("result").textContent = "";
+      document.getElementById("next-btn").disabled = true;
+    }
+
+    function checkAnswer(selected, isCorrect) {
+      const result = document.getElementById("result");
+      const allOptions = document.querySelectorAll(".options li");
+
+      allOptions.forEach(option => {
+        option.onclick = null;
+        option.classList.remove("correct", "wrong");
+      });
+
+      if (isCorrect) {
+        selected.classList.add("correct");
+        result.textContent = "Correto!";
+      } else {
+        selected.classList.add("wrong");
+        result.textContent = "Errado!";
+      }
+
+      document.getElementById("next-btn").disabled = false;
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current < questions.length) {
+        loadQuestion();
+      } else {
+        document.querySelector(".question-box").innerHTML = `
+          <p class="final-message">Você completou o quiz! 🎉</p>
+          <button onclick="restartQuiz()">Reiniciar</button>
+        `;
+      }
+    }
+
+    function restartQuiz() {
+      current = 0;
+      location.reload();
+    }
+
+    window.onload = loadQuestion;
+  </script>
+</body>
+</html>
